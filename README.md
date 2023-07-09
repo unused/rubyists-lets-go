@@ -1,2 +1,5 @@
-# rubyists-lets-go
-Look at Go from a Rubyists point of view
+
+# Rubyists, Lets Go
+
+Look at Go from a Rubyists point of view. A presentation and some go code
+examples.
