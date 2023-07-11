@@ -6,13 +6,13 @@ subtitle: Viennarb 2023
 theme: Copenhagen
 colortheme: beaver
 date: \today
-fontsize: 14pt
+fontsize: 12pt
 keywords: ['ruby', 'golang']
 ---
 
 # Slides & Resources
 
-https://github.com/unused/rubyists-lets-go/
+\large https://github.com/unused/rubyists-lets-go/
 
 # Go Programming Language
 
@@ -26,14 +26,17 @@ https://github.com/unused/rubyists-lets-go/
 
 # Are we on the same page?
 
-- Statically Typed
-<!-- nono, not like rbs or sorbet -->
+Go vs Ruby
 
-- Compiled to Cross-Platform
+- Easy to Learn vs Easy to Read
 
-- Nice Community, Much Packages
+- Statically Typed vs Duck Typed
 
-- Testing and Documentation is a Good Practice
+- Compiled to Cross-Platform, and not
+
+- Both: Nice Community, Much Packages
+
+- Testing (and Documentation) is a Good Practice
 
 # Learn Go
 
@@ -57,29 +60,62 @@ https://github.com/unused/rubyists-lets-go/
 
 :::
 
-# Starter
+# Projects Starter
 
 Much improved `go-mod`, but no `bundler` yet.
 
 ```sh
-# creative project names
-# including "go" highly welcome
+# creative project names,
+# include "go" if you can
 $ go mod init github.com/unused/gorgonzola
 ```
 
-# In the Wild
+# Packages by Directory
 
-Hugo, Kubernetes, Docker, ngrok, influxDB, fzf, esbuild, anycable
+before proper tooling: `$GO_PATH/src/github.com/unused/gorgonzola/`
 
-<!-- TODO: add logos -->
+```sh
+$ bundle info sinatra | grep Path
+/home/me/.../vendor/bundle/ruby/3.2.0/gems/sinatra-3.0.5
+```
+
+\spacer
+
+```sh
+$ ls -R gorgonzola/
+  go.mod # your Gemfile and Gemfile.lock
+  main.go
+  user.go
+  utils/ # that's package: [...]/gorgonzola/utils
+    calculator.go
+  vendor/ # go-mod vendor like bundle config path
+```
+
+# Load Directory in Ruby
+
+```ruby
+# import "github.com/unused/gorgonzola"
+# gorgonzola.GetCheese()
+
+# app/* | module App
+#   controllers/* | module App::Controllers
+#     concerns/* | module App::Controllers::Concerns
+def import(path)
+  Dir.glob("#{path}/*.rb") do |file|
+    require_relative file
+  end
+end
+```
+
+aka [conventional file structure (Zeitwerk)](https://github.com/fxn/zeitwerk#file-structure)
 
 # Defer Go
 
 ```go
 func write(filename, body string) {
     f, _ := os.Create(filename)
-    f.WriteString(body)
     defer f.Close()
+    f.WriteString(body)
 }
 ```
 
@@ -126,6 +162,7 @@ end
 # Defer Go in Good Style
 
 ```go
+// write writes body to a file named filename
 func write(filename, body string) error {
     f, err := os.Create(filename)
     if err != nil {
@@ -136,6 +173,36 @@ func write(filename, body string) error {
     return f.WriteString(body)
 }
 ```
+
+# Errors, Lightweight Exceptions
+
+::: columns
+
+:::: column
+```ruby
+# Create a custom error class
+class TriedStupidStuffError \
+    < StandardError; end
+
+msg = 'You miss stuff'
+raise ArgumentError.new msg
+
+# I'll take care, relax...
+def rescue_from
+  yield
+rescue ArgumentError => err
+  @logger.warn err
+end
+```
+::::
+
+:::: column
+![https://ruby-doc.org/3.2.2/Exception.html](figures/exceptions.png)
+::::
+
+:::
+
+
 
 # Errors
 
@@ -164,35 +231,144 @@ handling instead.
 
 ```go
 // for this example...
-func fromJson(res []byte, &dat Response) (*Response, error) {
-    return json.Unmarshal(res, &dat)
+func fromJson(res []byte) (*dat Response, error) {
+    var dat Response
+    err := json.Unmarshal(res, &dat)
+    return &dat, err
 }
 ```
 
-# Conventions in Language Design
+# (Naming) Conventions in Language Design
 
 `myFunc` vs `MyFunc`
 
-People write things very similar (like with Ruby)
+\spacer
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+  const name, age = "Kim", 22
+  fmt.Println(name, "is", age, "years old.")
+}
+```
+
+# Extend Types and Interfaces
+
+```go
+type Rect struct {
+  Width  int
+  Height int
+}
+
+func (r *Rect) Area() int {
+    return r.Width * r.Height
+}
+```
+
+\spacer
+
+```go
+type Geometry interface {
+  Area() int
+}
+
+```
 
 # Rubocop Ships with Language Tooling
 
 ```sh
-$ gofmt main.go
+$ go help cmd/gofmt
+Gofmt formats Go programs...
+
+$ go help cmd/vet
+Vet examines Go source code and reports suspicious...
 ```
 
 # Embrace Spaghetti
 
+::: columns
+:::: column
 Ruby is Developer Happiness
-
+::::
+:::: column
 Go is happy Developer
+::::
+:::
 
-# Summary
+# Use Ruby and Go (Trust a Rubyist)
+
+- fun to work with
+- has a bundler and rubocop on-board
+- does kind of duck typing
+- has focus on testing and docs
+- has nice community, much packages
+
+# In the Wild
+
+::: columns
+:::: column
+
+- Hugo <!-- static site gen. -->
+- Kubernetes <!-- orchestration thingy -->
+- Docker <!-- container toolset -->
+- ngrok <!-- tunnel service -->
+- influxDB <!-- time series db -->
+- fzf <!-- fuzzy finder -->
+- esbuild <!-- js build -->
+- Jaeger <!-- tracing -->
+- Anycable <!-- actioncable alternative -->
+
+::::
+:::: column
+
+- Grafana <!-- dashboards -->
+- etcd <!-- distr. key-value store -->
+- traefik <!-- proxy -->
+- vault <!-- secrets mgmt -->
+- Drone <!-- CI -->
+- CockroachDB <!-- distributed SQL -->
+- trivy <!-- security scanner -->
+- CoreDNS <!-- dns -->
+- ...
+
+::::
+:::
+
+# ...and don't forget the gopher
+
+::: columns
+:::: column
+
+![https://gohugo.io/](figures/gohugo.png){width=2.5cm}
+
+![https://traefik.io/traefik/](figures/traefik.png){width=2.5cm}
+
+::::
+:::: column
+
+![https://www.jaegertracing.io/](figures/jaeger.png){width=2.5cm}
+
+![https://www.gophercon.co.uk/](figures/gophercon-uk.png){width=2.5cm}
+
+::::
+:::
+
+
+# Resources
 
 \small https://github.com/unused/rubyists-lets-go
 
 \spacer
 
-\small Learn: https://gobyexample.com/ https://go.dev/tour/
-[https://go.dev/doc/effective\_go](https://go.dev/doc/effective_go)
+- [https://gobyexample.com/](https://gobyexample.com/)
+- [https://go.dev/tour/](https://go.dev/tour/)
+- [https://go.dev/doc/effective\_go](https://go.dev/doc/effective_go)
+
+\spacer
+
+- [https://github.com/spf13/cobra](https://github.com/spf13/cobra)
+- [https://github.com/spf13/viper](https://github.com/spf13/viper)
 
