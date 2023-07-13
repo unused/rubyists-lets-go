@@ -16,4 +16,4 @@ clean:
 
 .PHONY: watch
 watch:
-	@echo slides.md | entr -c 'make'
+	@echo slides.md | entr -c 'make clean && make'

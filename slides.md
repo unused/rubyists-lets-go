@@ -290,6 +290,17 @@ type Geometry interface {
 
 ```
 
+# Count Server Example 0
+
+```md
+A HTTP server that responds with a incremented
+counter with every visit.
+
+# Usage
+
+$ ./counter-server # starts server at port 6301
+```
+
 # Count Server Example I
 
 ```go
@@ -366,17 +377,27 @@ Vet examines Go source code and reports suspicious...
 Ruby is Developer Happiness
 ::::
 :::: column
-Go is happy Developer
+Go is Happy Developer
 ::::
 :::
 
 # Use Ruby and Go (Trust a Rubyist)
 
+- handy for devops and system tasks
+
 - fun to work with
-- has a bundler and rubocop on-board
+
 - does kind of duck typing
+
+- conventions make the rubyists eye only cry a little
+
+- has a bundler and rubocop on-board
+
 - has focus on testing and docs
+
 - has nice community, much packages
+
+- more to explore: goroutines & channels
 
 # In the Wild
 
