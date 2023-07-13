@@ -133,7 +133,7 @@ func write(filename, body string) {
 
 ```ruby
 def write(filename, body)
-  file = File.open(filename, 'w') do |file|
+  file = File.open(filename, 'w')
   file.write body
   file.close
 end
@@ -192,6 +192,8 @@ def rescue_from
   yield
 rescue ArgumentError => err
   @logger.warn err
+ensure
+  run_after_callbacks
 end
 ```
 ::::
@@ -255,7 +257,7 @@ func main() {
 }
 ```
 
-# Extend Types and Interfaces
+# Extend Types
 
 ```go
 type Rect struct {
@@ -268,6 +270,17 @@ func (r *Rect) Area() int {
 }
 ```
 
+# Interfaces
+
+```go
+type Rect struct {
+  //..
+}
+func (r *Rect) Area() int {
+  // ...
+}
+```
+
 \spacer
 
 ```go
@@ -275,6 +288,65 @@ type Geometry interface {
   Area() int
 }
 
+```
+
+# Count Server Example I
+
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+// Server provides a counter that is increased
+// with every visit.
+type Server struct {
+	Count int
+}
+```
+
+# Count Server Example II
+
+```go
+// ServeHTTP is the expected interface method to
+// make server an HTTP handler.
+func (s *Server) ServeHTTP(w http.ResponseWriter,
+                           req *http.Request) {
+	s.Count = s.Count + 1
+	fmt.Fprintf(w, "%d\n", s.Count)
+}
+
+func main() {
+	handler := Server{Count: 0}
+	http.ListenAndServe(":6301", &handler)
+}
+```
+
+# Count Server Example III
+
+```bash
+$ go run count-server.go &
+
+$ curl http://localhost:6301
+1
+$ curl http://localhost:6301
+2
+$ curl http://localhost:6301
+3
+```
+
+# Ruby Count Server Example
+
+```ruby
+require 'sinatra'
+
+counter = 0
+
+get '/' do
+  "#{counter += 1}\n"
+end
 ```
 
 # Rubocop Ships with Language Tooling
